@@ -57,7 +57,9 @@ export const getStoredJobs = (): Job[] => {
   } catch { return initialJobs; }
 };
 
-export const saveJobs = (jobs: Job[]) => localStorage.setItem('hirehub_jobs', JSON.stringify(jobs));
+export const saveJobs = (jobs: Job[]) => {
+  try { localStorage.setItem('hirehub_jobs', JSON.stringify(jobs)); } catch { /* storage may be unavailable or full */ }
+};
 
 export const getApplications = (): Application[] => {
   if (typeof window === 'undefined') return [];
@@ -68,7 +70,9 @@ export const getApplications = (): Application[] => {
   } catch { return []; }
 };
 
-export const saveApplications = (applications: Application[]) => localStorage.setItem('hirehub_applications', JSON.stringify(applications));
+export const saveApplications = (applications: Application[]) => {
+  try { localStorage.setItem('hirehub_applications', JSON.stringify(applications)); } catch { /* storage may be unavailable or full */ }
+};
 
 export const getUsers = (): User[] => {
   if (typeof window === 'undefined') return [];
@@ -79,4 +83,6 @@ export const getUsers = (): User[] => {
   } catch { return []; }
 };
 
-export const saveUsers = (users: User[]) => localStorage.setItem('hirehub_users', JSON.stringify(users));
+export const saveUsers = (users: User[]) => {
+  try { localStorage.setItem('hirehub_users', JSON.stringify(users)); } catch { /* storage may be unavailable or full */ }
+};
