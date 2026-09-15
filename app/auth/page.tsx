@@ -18,7 +18,9 @@ export default function AuthPage() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (localStorage.getItem('hirehub_session')) router.replace('/dashboard');
+    try {
+      if (localStorage.getItem('hirehub_session')) router.replace('/dashboard');
+    } catch {}
     const users = getUsers();
     if (!users.some(user => user.email === 'admin@hirehub.demo')) {
       saveUsers([...users, { id: 'admin-1', name: 'HireHub Admin', email: 'admin@hirehub.demo', password: 'Admin@123', role: 'admin' }]);
@@ -38,14 +40,24 @@ export default function AuthPage() {
       if (users.some(user => user.email === normalizedEmail)) { setError('An account with this email already exists.'); return; }
       const user: User = { id: crypto.randomUUID(), name: name.trim(), email: normalizedEmail, password, role, company: role === 'recruiter' ? company.trim() : undefined };
       saveUsers([...users, user]);
-      localStorage.setItem('hirehub_session', JSON.stringify({ id: user.id, name: user.name, email: user.email, role: user.role }));
+      try {
+        localStorage.setItem('hirehub_session', JSON.stringify({ id: user.id, name: user.name, email: user.email, role: user.role }));
+      } catch {
+        setError('Account created, but this browser could not save the session. Please enable browser storage and sign in again.');
+        return;
+      }
       setMessage('Account created successfully.');
       setTimeout(() => router.push('/dashboard'), 300); return;
     }
 
     const user = users.find(item => item.email === normalizedEmail && item.password === password);
     if (!user) { setError('Invalid email or password.'); return; }
-    localStorage.setItem('hirehub_session', JSON.stringify({ id: user.id, name: user.name, email: user.email, role: user.role }));
+    try {
+      localStorage.setItem('hirehub_session', JSON.stringify({ id: user.id, name: user.name, email: user.email, role: user.role }));
+    } catch {
+      setError('Authentication succeeded, but this browser could not save the session. Please enable browser storage and try again.');
+      return;
+    }
     setMessage('Authentication successful.');
     setTimeout(() => router.push('/dashboard'), 300);
   };
