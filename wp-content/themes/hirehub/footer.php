@@ -1,0 +1,1 @@
+<?php if (!defined('ABSPATH')) exit; ?><footer class="site-footer"><div class="container"><p>© <?php echo esc_html(date('Y')); ?> HireHub. Built with WordPress.</p></div></footer><?php wp_footer(); ?></body></html>

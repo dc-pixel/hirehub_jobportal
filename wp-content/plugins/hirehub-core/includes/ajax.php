@@ -1,0 +1,4 @@
+<?php
+if (!defined('ABSPATH')) exit;
+add_action('wp_ajax_hirehub_search_jobs','hirehub_ajax_search_jobs'); add_action('wp_ajax_nopriv_hirehub_search_jobs','hirehub_ajax_search_jobs');
+function hirehub_ajax_search_jobs(){ check_ajax_referer('hirehub_ajax','nonce'); $search=sanitize_text_field(wp_unslash($_POST['search']??'')); $location=sanitize_text_field(wp_unslash($_POST['location']??'')); $job_type=sanitize_text_field(wp_unslash($_POST['job_type']??'')); $args=array('post_type'=>'hirehub_job','posts_per_page'=>10,'s'=>$search); $meta=array('relation'=>'AND'); if($location) $meta[]=array('key'=>'_location','value'=>$location,'compare'=>'LIKE'); if($job_type) $meta[]=array('key'=>'_job_type','value'=>$job_type,'compare'=>'LIKE'); if(count($meta)>1) $args['meta_query']=$meta; wp_send_json_success(hirehub_render_jobs($args)); }

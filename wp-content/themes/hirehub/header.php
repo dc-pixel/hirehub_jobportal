@@ -1,0 +1,3 @@
+<?php
+if (!defined('ABSPATH')) exit;
+?><!doctype html><html <?php language_attributes(); ?>><head><meta charset="<?php bloginfo('charset'); ?>"><meta name="viewport" content="width=device-width, initial-scale=1"><?php wp_head(); ?></head><body <?php body_class(); ?>><header class="site-header"><div class="container nav"><a class="brand" href="<?php echo esc_url(home_url('/')); ?>">HireHub</a><nav><a href="<?php echo esc_url(home_url('/jobs/')); ?>">Jobs</a><?php if(is_user_logged_in()): ?><a href="<?php echo esc_url(home_url('/dashboard/')); ?>">Dashboard</a><a href="<?php echo esc_url(wp_logout_url(home_url('/'))); ?>">Logout</a><?php else: ?><a href="<?php echo esc_url(wp_login_url()); ?>">Login</a><?php endif; ?></nav></div></header>
