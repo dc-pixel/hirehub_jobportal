@@ -8,9 +8,17 @@ type Session = { id:string; name:string; email:string; role:'candidate'|'recruit
 export default function Home() {
   const [jobs,setJobs]=useState<Job[]>([]); const [query,setQuery]=useState(''); const [location,setLocation]=useState(''); const [category,setCategory]=useState('');
   const [selected,setSelected]=useState<Job|null>(null); const [saved,setSaved]=useState<number[]>([]); const [applied,setApplied]=useState<number[]>([]); const [session,setSession]=useState<Session|null>(null); const [coverLetter,setCoverLetter]=useState(''); const [resumeName,setResumeName]=useState(''); const [message,setMessage]=useState('');
-  useEffect(()=>{setJobs(getStoredJobs()); const raw=localStorage.getItem('hirehub_session'); if(raw){try{setSession(JSON.parse(raw));}catch{}} const apps=getApplications(); let email=''; try{email=JSON.parse(raw||'{}').email||'';}catch{} setApplied(apps.filter(a=>a.candidateEmail===email).map(a=>a.jobId)); const rawSaved=localStorage.getItem('hirehub_saved'); if(rawSaved)try{setSaved(JSON.parse(rawSaved));}catch{}},[]);
+  useEffect(()=>{
+    setJobs(getStoredJobs());
+    let raw: string | null = null;
+    let rawSaved: string | null = null;
+    try { raw=localStorage.getItem('hirehub_session'); rawSaved=localStorage.getItem('hirehub_saved'); } catch {}
+    if(raw){try{setSession(JSON.parse(raw));}catch{}}
+    const apps=getApplications(); let email=''; try{email=JSON.parse(raw||'{}').email||'';}catch{} setApplied(apps.filter(a=>a.candidateEmail===email).map(a=>a.jobId));
+    if(rawSaved)try{const parsed=JSON.parse(rawSaved); if(Array.isArray(parsed))setSaved(parsed);}catch{}
+  },[]);
   const filtered=useMemo(()=>jobs.filter(j=>`${j.title} ${j.company} ${j.category} ${j.skills.join(' ')}`.toLowerCase().includes(query.toLowerCase())&&j.location.toLowerCase().includes(location.toLowerCase())&&(!category||j.category===category)),[jobs,query,location,category]);
-  const toggleSaved=(id:number)=>{const next=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];setSaved(next);localStorage.setItem('hirehub_saved',JSON.stringify(next));};
+  const toggleSaved=(id:number)=>{const next=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];setSaved(next);try{localStorage.setItem('hirehub_saved',JSON.stringify(next));}catch{setMessage('Saved jobs are unavailable because browser storage is disabled or full.');}};
   const submitApplication=()=>{
     if(!selected)return;
     if(!session||session.role!=='candidate'){setMessage('Please sign in with a Candidate account before applying.');return;}
@@ -18,7 +26,7 @@ export default function Home() {
     const app:Application={id:crypto.randomUUID(),jobId:selected.id,jobTitle:selected.title,company:selected.company,candidateEmail:session.email,candidateName:session.name,recruiterEmail:selected.recruiterEmail,coverLetter,resumeName,status:'Applied',appliedAt:new Date().toISOString()};
     saveApplications([...getApplications(),app]);setApplied([...applied,selected.id]);setMessage('Application submitted successfully.');setCoverLetter('');setResumeName('');setTimeout(()=>{setSelected(null);setMessage('')},1200);
   };
-  const logout=()=>{localStorage.removeItem('hirehub_session'); window.location.reload();};
+  const logout=()=>{try{localStorage.removeItem('hirehub_session');}catch{} window.location.reload();};
   return <main>
     <nav className="nav"><div className="container navin"><a href="/" className="logo">Hire<span>Hub</span></a><div className="navlinks"><a href="#jobs">Find Jobs</a><a href="#companies">Companies</a><a href="#about">About</a>{session?<><a className="btn ghost" href="/dashboard">Dashboard</a><button className="btn primary" onClick={logout}>Logout</button></>:<a className="btn primary" href="/auth">Login / Register</a>}</div></div></nav>
     <section className="hero"><div className="container"><div className="eyebrow">{session?`SIGNED IN AS ${session.role.toUpperCase()}`:'SMARTER JOB SEARCH'}</div><h1>Find a job you’ll love.</h1><p>Discover opportunities from growing companies and build the career you want with HireHub.</p><div className="searchbox"><input className="field" placeholder="Job title, skill or company" value={query} onChange={e=>setQuery(e.target.value)}/><input className="field" placeholder="Location" value={location} onChange={e=>setLocation(e.target.value)}/><select className="field" value={category} onChange={e=>setCategory(e.target.value)}><option value="">All categories</option><option>Development</option><option>QA</option><option>Design</option><option>Marketing</option><option>Sales</option></select><button className="btn primary" onClick={()=>document.getElementById('jobs')?.scrollIntoView({behavior:'smooth'})}>Search Jobs</button></div></div></section>
