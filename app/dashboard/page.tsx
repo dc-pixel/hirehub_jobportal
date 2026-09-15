@@ -16,13 +16,14 @@ export default function DashboardPage() {
   const [newJob, setNewJob] = useState({title:'',company:'',location:'',type:'Full Time',salary:'',experience:'0–2 years',category:'Development',description:'',skills:''});
 
   useEffect(() => {
-    const raw = localStorage.getItem('hirehub_session');
+    let raw: string | null = null;
+    try { raw = localStorage.getItem('hirehub_session'); } catch { router.replace('/auth'); return; }
     if (!raw) { router.replace('/auth'); return; }
     try { setSession(JSON.parse(raw)); setJobs(getStoredJobs()); setApplications(getApplications()); }
-    catch { localStorage.removeItem('hirehub_session'); router.replace('/auth'); }
+    catch { try { localStorage.removeItem('hirehub_session'); } catch {} router.replace('/auth'); }
   }, [router]);
 
-  const logout = () => { localStorage.removeItem('hirehub_session'); router.replace('/auth'); };
+  const logout = () => { try { localStorage.removeItem('hirehub_session'); } catch {} router.replace('/auth'); };
   const updateStatus = (id: string, status: Application['status']) => {
     const next = applications.map(app => app.id === id ? {...app, status} : app);
     setApplications(next); saveApplications(next); setNotice(`Application moved to ${status}.`); setTimeout(()=>setNotice(''),2200);
