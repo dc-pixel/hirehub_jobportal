@@ -1,38 +1,43 @@
 # HireHub Job Portal
 
-HireHub is a portfolio-ready job portal. The repository contains the original WordPress/PHP implementation plus a **Vercel-ready Next.js demo** for fast public hosting.
+HireHub is a portfolio-ready recruitment platform with two implementations in one repository:
 
-## Vercel version
+1. **Vercel-ready Next.js demo** in `app/` for public hosting.
+2. **Original WordPress/PHP implementation** in `wp-content/` for demonstrating WordPress development.
 
-The Next.js app lives in `app/` and can be deployed directly to Vercel.
+## Next.js / Vercel demo
 
 ### Features
 
-- Modern responsive job-search interface
-- Job title, company, location and category filtering
-- Job detail/application modal
-- Candidate application workflow
-- **Authentication page at `/auth`**
-- Login and registration UI
-- Candidate and Recruiter role selection
-- **Role-based authorization dashboard at `/dashboard`**
-- Protected dashboard redirect for unauthenticated users
-- Logout/session handling
+- Responsive job-search homepage
+- Keyword, company, skill, location and category filtering
+- Job details and application modal
+- Candidate registration/login
+- Recruiter registration/login
+- Role-based authorization
+- Protected dashboard route
+- Candidate application tracking
+- Resume filename capture and cover letter
+- Save/unsave jobs
+- Recruiter job creation and removal
+- Recruiter applicant management
+- Application status workflow: Applied → Shortlisted → Interview → Selected/Rejected
+- Admin dashboard with platform job/application visibility
+- Local browser persistence so the demo works without external services
 - TypeScript + React + Next.js
-- Zero external database required for the demo
 
-### Authentication & Authorization
+### Demo authentication
 
-The Vercel demo includes a frontend authentication/authorization flow:
+Admin account:
 
-- `/auth` — login/register page
-- Candidate — candidate-specific dashboard permissions
-- Recruiter — recruiter-specific dashboard permissions
-- `/dashboard` — checks the current session and redirects to `/auth` when no session exists
-- Logout removes the current HireHub session
-- Dashboard actions and permission cards are rendered according to the selected role
+- Email: `admin@hirehub.demo`
+- Password: `Admin@123`
 
-**Important:** this is a portfolio/demo implementation using browser `localStorage`; it is not production-grade authentication. For production, use server-side authentication such as Auth.js/NextAuth or an identity provider, persist users in a database, hash passwords securely, use HTTP-only cookies, and enforce authorization on server/API routes.
+For candidate/recruiter testing, use **Register** and create separate accounts.
+
+### Important security note
+
+The Next.js demo intentionally uses browser `localStorage` so it can be demonstrated without configuring a database. It is **not production authentication**: passwords are stored locally in the browser and authorization is client-side. A production deployment should use server-side authentication, password hashing, HTTP-only secure cookies, a persistent database, and server/API authorization (for example Auth.js/NextAuth plus PostgreSQL).
 
 ### Run locally
 
@@ -45,11 +50,11 @@ Open `http://localhost:3000`.
 
 ### Deploy to Vercel
 
-Import this GitHub repository into Vercel. Framework preset: **Next.js**. Build command: `next build` (or the Vercel default). No environment variables are required for the demo.
+Import the GitHub repository into Vercel. Use **Next.js** as the framework preset and the repository root as the project root. No environment variables are required for the demo.
 
 ## Original WordPress implementation
 
-The original implementation remains under `wp-content/` and demonstrates WordPress-specific development:
+The WordPress implementation remains under `wp-content/` and demonstrates:
 
 - Custom WordPress theme
 - Custom HireHub Core plugin
@@ -61,8 +66,6 @@ The original implementation remains under `wp-content/` and demonstrates WordPre
 - Nonces, sanitization, escaping and capability checks
 - Resume upload workflow
 
-For a production system, the Next.js frontend should be connected to a persistent backend/database or WordPress REST API rather than relying on demo in-memory state.
-
 ## Portfolio talking points
 
-HireHub demonstrates the ability to work across a CMS-based PHP stack and a modern React/Next.js frontend. The project now also demonstrates authentication UX, role selection, protected dashboard routing and role-based authorization concepts.
+HireHub demonstrates a full recruitment workflow and gives interview talking points around WordPress/PHP, custom plugins, custom post types, roles/capabilities, REST APIs, AJAX, responsive frontend development, authentication UX, authorization concepts, data modeling and application-state management.
