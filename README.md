@@ -12,10 +12,27 @@ The Next.js app lives in `app/` and can be deployed directly to Vercel.
 - Job title, company, location and category filtering
 - Job detail/application modal
 - Candidate application workflow
-- Candidate dashboard with application tracking
-- Recruiter/admin-oriented product structure ready for backend integration
+- **Authentication page at `/auth`**
+- Login and registration UI
+- Candidate and Recruiter role selection
+- **Role-based authorization dashboard at `/dashboard`**
+- Protected dashboard redirect for unauthenticated users
+- Logout/session handling
 - TypeScript + React + Next.js
 - Zero external database required for the demo
+
+### Authentication & Authorization
+
+The Vercel demo includes a frontend authentication/authorization flow:
+
+- `/auth` — login/register page
+- Candidate — candidate-specific dashboard permissions
+- Recruiter — recruiter-specific dashboard permissions
+- `/dashboard` — checks the current session and redirects to `/auth` when no session exists
+- Logout removes the current HireHub session
+- Dashboard actions and permission cards are rendered according to the selected role
+
+**Important:** this is a portfolio/demo implementation using browser `localStorage`; it is not production-grade authentication. For production, use server-side authentication such as Auth.js/NextAuth or an identity provider, persist users in a database, hash passwords securely, use HTTP-only cookies, and enforce authorization on server/API routes.
 
 ### Run locally
 
@@ -48,4 +65,4 @@ For a production system, the Next.js frontend should be connected to a persisten
 
 ## Portfolio talking points
 
-HireHub demonstrates the ability to work across a CMS-based PHP stack and a modern React/Next.js frontend. The project is intentionally structured so the public Vercel demo can be shown to recruiters while the WordPress source demonstrates WordPress/PHP skills.
+HireHub demonstrates the ability to work across a CMS-based PHP stack and a modern React/Next.js frontend. The project now also demonstrates authentication UX, role selection, protected dashboard routing and role-based authorization concepts.
